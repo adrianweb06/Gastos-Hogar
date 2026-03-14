@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NAARA — Sneakers de Lujo</title>
+  <style>
+    /* ─── Reset & Variables ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --white: #ffffff;
+      --black: #1d1d1f;
+      --gray-1: #f5f5f7;
+      --gray-2: #e8e8ed;
+      --gray-3: #6e6e73;
+      --gold: #c9a96e;
+      --gold-light: #e8d5aa;
+      --beige: #d4c4a8;
+      --accent: #c9a96e;
+      --font: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --transition: 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    /* ─── Navigation ────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      transition: background 0.3s;
+    }
+    .nav-logo {
+      font-size: 22px; font-weight: 700; letter-spacing: -0.5px;
+      color: var(--black); text-decoration: none;
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links {
+      display: flex; gap: 28px; list-style: none;
+    }
+    .nav-links a {
+      font-size: 13px; color: var(--black); text-decoration: none;
+      opacity: 0.8; transition: opacity 0.2s;
+      letter-spacing: 0.01em;
+    }
+    .nav-links a:hover { opacity: 1; }
+    .nav-cta {
+      background: var(--black); color: var(--white);
+      border: none; padding: 8px 18px; border-radius: 980px;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+    .nav-cta:hover { background: #333; transform: scale(1.03); }
+
+    /* ─── Hero ──────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      background: var(--black);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 30%,
+        rgba(201,169,110,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-size: 13px; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 20px;
+      opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-title {
+      font-size: clamp(52px, 10vw, 96px);
+      font-weight: 700; letter-spacing: -0.03em; line-height: 1.02;
+      color: var(--white);
+      margin-bottom: 24px;
+      opacity: 0; animation: fadeUp 0.8s 0.35s forwards;
+    }
+    .hero-title em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: clamp(17px, 2.5vw, 21px);
+      color: rgba(255,255,255,0.65);
+      max-width: 540px; line-height: 1.55;
+      margin-bottom: 40px;
+      opacity: 0; animation: fadeUp 0.8s 0.5s forwards;
+    }
+    .hero-actions {
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      margin-bottom: 72px;
+      opacity: 0; animation: fadeUp 0.8s 0.65s forwards;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--black);
+      border: none; padding: 14px 32px; border-radius: 980px;
+      font-size: 17px; font-weight: 600; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: scale(1.03); }
+    .btn-secondary {
+      background: transparent;
+      color: var(--gold);
+      border: 1.5px solid var(--gold);
+      padding: 14px 32px; border-radius: 980px;
+      font-size: 17px; font-weight: 500; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-secondary:hover { background: rgba(201,169,110,0.1); transform: scale(1.03); }
+
+    /* ─── Hero Shoe Cards ───────────────────────────────────────── */
+    .hero-shoes {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 16px; max-width: 1100px; width: 100%;
+      opacity: 0; animation: fadeUp 1s 0.8s forwards;
+    }
+    .hero-shoe-card {
+      border-radius: 20px; overflow: hidden;
+      aspect-ratio: 3/4;
+      position: relative;
+      cursor: pointer;
+      transform: translateY(0);
+      transition: transform 0.4s var(--transition), box-shadow 0.4s;
+    }
+    .hero-shoe-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+    .hero-shoe-card img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.6s var(--transition);
+    }
+    .hero-shoe-card:hover img { transform: scale(1.05); }
+    .hero-shoe-card .card-label {
+      position: absolute; bottom: 16px; left: 16px; right: 16px;
+      color: white; font-size: 13px; font-weight: 600;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+    }
+    .hero-shoe-card .card-price {
+      font-size: 11px; opacity: 0.8; margin-top: 2px;
+    }
+
+    /* ─── Section Utility ───────────────────────────────────────── */
+    section { padding: 100px 24px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-eyebrow {
+      font-size: 13px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 700; letter-spacing: -0.025em; line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .section-lead {
+      font-size: clamp(16px, 2vw, 19px);
+      color: var(--gray-3); line-height: 1.6;
+      max-width: 640px;
+    }
+
+    /* ─── Reveal Animations ─────────────────────────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.8s var(--transition), transform 0.8s var(--transition);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(30px); }
+    }
+
+    /* ─── Highlights Strip ──────────────────────────────────────── */
+    .highlights { background: var(--gray-1); }
+    .highlights-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px; margin-top: 60px;
+    }
+    .highlight-card {
+      background: var(--white);
+      padding: 48px 36px;
+      text-align: center;
+      transition: background 0.3s;
+    }
+    .highlight-card:hover { background: #fafafa; }
+    .highlight-icon {
+      font-size: 40px; margin-bottom: 20px;
+      display: block;
+    }
+    .highlight-card h3 {
+      font-size: 21px; font-weight: 700; margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+    .highlight-card p {
+      font-size: 14px; color: var(--gray-3); line-height: 1.6;
+    }
+
+    /* ─── Featured Shoe Showcase ────────────────────────────────── */
+    .showcase { background: var(--white); }
+    .showcase-item {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+      margin-bottom: 120px;
+    }
+    .showcase-item:last-child { margin-bottom: 0; }
+    .showcase-item.reverse { direction: rtl; }
+    .showcase-item.reverse > * { direction: ltr; }
+    .showcase-img-wrap {
+      border-radius: 28px; overflow: hidden;
+      aspect-ratio: 4/5;
+      background: var(--gray-1);
+      position: relative;
+    }
+    .showcase-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.7s var(--transition);
+    }
+    .showcase-img-wrap:hover img { transform: scale(1.04); }
+    .showcase-badge {
+      position: absolute; top: 20px; left: 20px;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 14px; border-radius: 980px;
+    }
+    .showcase-content { padding: 20px 0; }
+    .showcase-name {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 700; letter-spacing: -0.025em; line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .showcase-desc {
+      font-size: 16px; color: var(--gray-3); line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .showcase-price {
+      font-size: 28px; font-weight: 700; color: var(--black);
+      margin-bottom: 6px;
+    }
+    .showcase-price-sub {
+      font-size: 13px; color: var(--gray-3); margin-bottom: 28px;
+    }
+    .showcase-colors {
+      display: flex; gap: 10px; margin-bottom: 28px;
+      align-items: center;
+    }
+    .showcase-colors span {
+      font-size: 13px; color: var(--gray-3); margin-right: 4px;
+    }
+    .color-dot {
+      width: 22px; height: 22px; border-radius: 50%;
+      cursor: pointer; border: 2px solid transparent;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .color-dot:hover, .color-dot.active {
+      border-color: var(--black); transform: scale(1.15);
+    }
+    .sizes {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px;
+    }
+    .size-btn {
+      width: 42px; height: 42px; border-radius: 50%;
+      border: 1.5px solid var(--gray-2);
+      background: transparent;
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .size-btn:hover { border-color: var(--black); }
+    .size-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
+    .add-to-cart {
+      background: var(--black); color: var(--white);
+      border: none; padding: 16px 36px; border-radius: 980px;
+      font-size: 16px; font-weight: 600; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      margin-right: 12px;
+    }
+    .add-to-cart:hover { background: #333; transform: scale(1.02); }
+    .wishlist-btn {
+      background: var(--gray-1); color: var(--black);
+      border: none; width: 52px; height: 52px; border-radius: 50%;
+      font-size: 20px; cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .wishlist-btn:hover { background: var(--gray-2); transform: scale(1.05); }
+
+    /* ─── Stats Bar ─────────────────────────────────────────────── */
+    .stats { background: var(--black); padding: 80px 24px; }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2px; max-width: 1100px; margin: 0 auto;
+      text-align: center;
+    }
+    .stat-item { padding: 40px 20px; }
+    .stat-number {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 700; color: var(--gold);
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+    .stat-label {
+      font-size: 14px; color: rgba(255,255,255,0.5);
+      letter-spacing: 0.05em; text-transform: uppercase;
+    }
+
+    /* ─── Full-Width Feature ────────────────────────────────────── */
+    .feature-full {
+      background: var(--gray-1);
+      padding: 0;
+      overflow: hidden;
+    }
+    .feature-full-inner {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 640px;
+    }
+    .feature-full-img {
+      overflow: hidden;
+    }
+    .feature-full-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block;
+    }
+    .feature-full-content {
+      padding: 80px 60px;
+      display: flex; flex-direction: column; justify-content: center;
+      background: var(--black); color: var(--white);
+    }
+    .feature-full-content .section-eyebrow { color: var(--gold); }
+    .feature-full-content .section-title { color: var(--white); }
+    .feature-full-content .section-lead { color: rgba(255,255,255,0.6); }
+    .feature-list {
+      list-style: none; margin-top: 36px; display: flex; flex-direction: column; gap: 20px;
+    }
+    .feature-list li {
+      display: flex; align-items: flex-start; gap: 14px;
+      font-size: 15px; color: rgba(255,255,255,0.75);
+    }
+    .feature-list li::before {
+      content: '✦';
+      color: var(--gold); font-size: 12px; flex-shrink: 0; margin-top: 2px;
+    }
+
+    /* ─── Collection Grid ───────────────────────────────────────── */
+    .collection { background: var(--white); }
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px; margin-top: 60px;
+    }
+    .collection-card {
+      border-radius: 24px; overflow: hidden;
+      position: relative; cursor: pointer;
+      background: var(--gray-1);
+    }
+    .collection-card img {
+      width: 100%; aspect-ratio: 4/3; object-fit: cover;
+      display: block;
+      transition: transform 0.6s var(--transition);
+    }
+    .collection-card:hover img { transform: scale(1.04); }
+    .collection-card-info {
+      padding: 28px;
+    }
+    .collection-card-info h3 {
+      font-size: 21px; font-weight: 700; margin-bottom: 6px;
+    }
+    .collection-card-info p {
+      font-size: 14px; color: var(--gray-3); margin-bottom: 16px; line-height: 1.5;
+    }
+    .link-btn {
+      color: var(--gold); font-size: 14px; font-weight: 600;
+      text-decoration: none; letter-spacing: 0.02em;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .link-btn::after { content: '→'; transition: transform 0.2s; }
+    .link-btn:hover::after { transform: translateX(4px); }
+
+    /* ─── Testimonials ──────────────────────────────────────────── */
+    .testimonials { background: var(--gray-1); }
+    .testimonials-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 24px; margin-top: 60px;
+    }
+    .testimonial-card {
+      background: var(--white); border-radius: 20px;
+      padding: 36px 28px;
+    }
+    .stars { color: var(--gold); font-size: 18px; margin-bottom: 16px; letter-spacing: 2px; }
+    .testimonial-card blockquote {
+      font-size: 15px; color: var(--black); line-height: 1.65;
+      font-style: italic; margin-bottom: 20px;
+    }
+    .reviewer {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .reviewer-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--beige) 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 16px; color: white; flex-shrink: 0;
+    }
+    .reviewer-name { font-size: 14px; font-weight: 600; }
+    .reviewer-location { font-size: 12px; color: var(--gray-3); }
+
+    /* ─── CTA Final ─────────────────────────────────────────────── */
+    .cta-final {
+      background: var(--black);
+      text-align: center; padding: 120px 24px;
+    }
+    .cta-final .section-eyebrow { color: var(--gold); }
+    .cta-final .section-title { color: var(--white); margin-bottom: 20px; }
+    .cta-final p { font-size: 18px; color: rgba(255,255,255,0.6); margin-bottom: 48px; }
+    .cta-final .btn-primary { font-size: 18px; padding: 18px 44px; }
+
+    /* ─── Footer ────────────────────────────────────────────────── */
+    footer {
+      background: var(--gray-1); border-top: 1px solid var(--gray-2);
+      padding: 48px 24px 32px;
+    }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 48px;
+    }
+    .footer-brand .nav-logo { font-size: 26px; display: block; margin-bottom: 14px; }
+    .footer-brand p { font-size: 14px; color: var(--gray-3); line-height: 1.6; max-width: 260px; }
+    .footer-col h4 {
+      font-size: 13px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 16px; color: var(--black);
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .footer-col ul li a {
+      font-size: 13px; color: var(--gray-3); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: var(--black); }
+    .footer-bottom {
+      border-top: 1px solid var(--gray-2); padding-top: 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-bottom p { font-size: 12px; color: var(--gray-3); }
+
+    /* ─── Cart Drawer ───────────────────────────────────────────── */
+    .cart-count {
+      position: absolute; top: -6px; right: -8px;
+      background: var(--gold); color: white;
+      width: 18px; height: 18px; border-radius: 50%;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-cart { position: relative; background: none; border: none; cursor: pointer; font-size: 20px; }
+
+    /* ─── Responsive ────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-shoes { grid-template-columns: repeat(2, 1fr); }
+      .highlights-grid { grid-template-columns: 1fr 1fr; }
+      .showcase-item { grid-template-columns: 1fr; gap: 40px; }
+      .showcase-item.reverse { direction: ltr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .feature-full-inner { grid-template-columns: 1fr; }
+      .feature-full-content { padding: 60px 36px; }
+      .testimonials-grid { grid-template-columns: 1fr 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 600px) {
+      .hero-shoes { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .highlights-grid { grid-template-columns: 1fr; }
+      .collection-grid { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ─── Scrollbar ─────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--gray-2); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">NAARA<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="#coleccion">Colección</a></li>
+      <li><a href="#modelos">Modelos</a></li>
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:16px">
+      <button class="nav-cart" onclick="toggleCart()" aria-label="Carrito">
+        🛍
+        <span class="cart-count" id="cartCount">0</span>
+      </button>
+      <a href="#coleccion" class="nav-cta">Comprar Ahora</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-eyebrow">Nueva Colección 2026</p>
+    <h1 class="hero-title">Camina con<br><em>actitud.</em></h1>
+    <p class="hero-subtitle">Sneakers de lujo diseñados para la mujer que no necesita permiso para brillar. Materiales premium, diseño sofisticado.</p>
+    <div class="hero-actions">
+      <a href="#coleccion" class="btn-primary">Ver Colección</a>
+      <a href="#nosotros" class="btn-secondary">Nuestra Historia</a>
+    </div>
+    <div class="hero-shoes">
+      <div class="hero-shoe-card reveal reveal-delay-1">
+        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80" alt="NAARA Classic White" loading="lazy" />
+        <div class="card-label">
+          Classic White
+          <div class="card-price">$189.900 COP</div>
+        </div>
+      </div>
+      <div class="hero-shoe-card reveal reveal-delay-2">
+        <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&q=80" alt="NAARA Star Black" loading="lazy" />
+        <div class="card-label">
+          Star Black
+          <div class="card-price">$199.900 COP</div>
+        </div>
+      </div>
+      <div class="hero-shoe-card reveal reveal-delay-3">
+        <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=600&q=80" alt="NAARA Heart White" loading="lazy" />
+        <div class="card-label">
+          Heart Edition
+          <div class="card-price">$219.900 COP</div>
+        </div>
+      </div>
+      <div class="hero-shoe-card reveal reveal-delay-4">
+        <img src="https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=600&q=80" alt="NAARA Croc Nude" loading="lazy" />
+        <div class="card-label">
+          Croc Nude
+          <div class="card-price">$229.900 COP</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HIGHLIGHTS -->
+  <section class="highlights" id="nosotros">
+    <div class="section-inner">
+      <p class="section-eyebrow reveal">Por qué NAARA</p>
+      <h2 class="section-title reveal">Lo mejor de cada paso.</h2>
+      <p class="section-lead reveal">Cada par de NAARA es una declaración de estilo. Materiales seleccionados, detalles únicos y la comodidad que mereces.</p>
+      <div class="highlights-grid" style="margin-top:60px">
+        <div class="highlight-card reveal reveal-delay-1">
+          <span class="highlight-icon">✦</span>
+          <h3>Detalles de Lujo</h3>
+          <p>Herrajes dorados, piedras cristal y tejidos exclusivos que elevan cada diseño a joya de moda.</p>
+        </div>
+        <div class="highlight-card reveal reveal-delay-2">
+          <span class="highlight-icon">🛡</span>
+          <h3>Cuero Premium</h3>
+          <p>Materiales de primera selección: cuero genuino, texturas crocco y suelas de alto desempeño.</p>
+        </div>
+        <div class="highlight-card reveal reveal-delay-3">
+          <span class="highlight-icon">♡</span>
+          <h3>Comodidad Total</h3>
+          <p>Plantilla anatómica acolchada y horma diseñada para que puedas usarlos todo el día sin cansancio.</p>
+        </div>
+        <div class="highlight-card reveal reveal-delay-1">
+          <span class="highlight-icon">✈</span>
+          <h3>Envío Express</h3>
+          <p>Recibe tu pedido en 24-48 horas a todo el país. Empaque premium incluido en cada compra.</p>
+        </div>
+        <div class="highlight-card reveal reveal-delay-2">
+          <span class="highlight-icon">↩</span>
+          <h3>Devolución Fácil</h3>
+          <p>30 días para cambios y devoluciones sin preguntas. Tu satisfacción es nuestra prioridad absoluta.</p>
+        </div>
+        <div class="highlight-card reveal reveal-delay-3">
+          <span class="highlight-icon">⭐</span>
+          <h3>Tallas del 35 al 41</h3>
+          <p>Amplio rango de tallas con guía detallada para que encuentres el ajuste perfecto a la primera.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOWCASE — PRODUCT 1 -->
+  <section class="showcase" id="modelos">
+    <div class="section-inner">
+
+      <!-- Shoe 1: Classic White -->
+      <div class="showcase-item reveal">
+        <div class="showcase-img-wrap">
+          <span class="showcase-badge">Más Vendido</span>
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=85" alt="NAARA Classic White Sneaker" loading="lazy" />
+        </div>
+        <div class="showcase-content">
+          <p class="section-eyebrow">Modelo 01</p>
+          <h2 class="showcase-name">Classic White<br>Leopard Edition</h2>
+          <p class="showcase-desc">La elegancia redefinida. Cuero blanco inmaculado con acento en talón de print leopardo, herrajes dorados y cristales Swarovski en la lengüeta. La fusión perfecta entre lo clásico y lo atrevido.</p>
+          <div class="showcase-price">$189.900 COP</div>
+          <p class="showcase-price-sub">o 3 cuotas de $63.300 sin interés</p>
+          <div class="showcase-colors">
+            <span>Color:</span>
+            <div class="color-dot active" style="background:#f5f5f0; border-color:#ccc" title="Blanco"></div>
+            <div class="color-dot" style="background:#d4c4a8" title="Beige"></div>
+          </div>
+          <div class="sizes">
+            <button class="size-btn" onclick="selectSize(this)">35</button>
+            <button class="size-btn active" onclick="selectSize(this)">36</button>
+            <button class="size-btn" onclick="selectSize(this)">37</button>
+            <button class="size-btn" onclick="selectSize(this)">38</button>
+            <button class="size-btn" onclick="selectSize(this)">39</button>
+            <button class="size-btn" onclick="selectSize(this)">40</button>
+            <button class="size-btn" onclick="selectSize(this)">41</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="add-to-cart" onclick="addToCart('Classic White Leopard', 189900)">Agregar al Carrito</button>
+            <button class="wishlist-btn" onclick="toggleWishlist(this)" title="Lista de deseos">♡</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shoe 2: Star Black -->
+      <div class="showcase-item reverse reveal">
+        <div class="showcase-img-wrap">
+          <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=800&q=85" alt="NAARA Star Black Sneaker" loading="lazy" />
+        </div>
+        <div class="showcase-content">
+          <p class="section-eyebrow">Modelo 02</p>
+          <h2 class="showcase-name">Star Black<br>Silver Edition</h2>
+          <p class="showcase-desc">Audaz y sin concesiones. Upper en tejido técnico negro con overlays de cuero, estrellas metálicas en los agujeros de cordón y franja plateada lateral. Para quienes marcan tendencia.</p>
+          <div class="showcase-price">$199.900 COP</div>
+          <p class="showcase-price-sub">o 3 cuotas de $66.633 sin interés</p>
+          <div class="showcase-colors">
+            <span>Color:</span>
+            <div class="color-dot active" style="background:#1a1a1a" title="Negro"></div>
+            <div class="color-dot" style="background:#4a4a5a" title="Gris Oscuro"></div>
+          </div>
+          <div class="sizes">
+            <button class="size-btn" onclick="selectSize(this)">35</button>
+            <button class="size-btn" onclick="selectSize(this)">36</button>
+            <button class="size-btn active" onclick="selectSize(this)">37</button>
+            <button class="size-btn" onclick="selectSize(this)">38</button>
+            <button class="size-btn" onclick="selectSize(this)">39</button>
+            <button class="size-btn" onclick="selectSize(this)">40</button>
+            <button class="size-btn" onclick="selectSize(this)">41</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="add-to-cart" onclick="addToCart('Star Black Silver', 199900)">Agregar al Carrito</button>
+            <button class="wishlist-btn" onclick="toggleWishlist(this)" title="Lista de deseos">♡</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shoe 3: Heart White -->
+      <div class="showcase-item reveal">
+        <div class="showcase-img-wrap">
+          <span class="showcase-badge">Nuevo</span>
+          <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&q=85" alt="NAARA Heart Edition" loading="lazy" />
+        </div>
+        <div class="showcase-content">
+          <p class="section-eyebrow">Modelo 03</p>
+          <h2 class="showcase-name">Heart Edition<br>White Ribbon</h2>
+          <p class="showcase-desc">Romanticismo hecho sneaker. Plataforma elevada, cordones de raso y un corazón de cristales como charm central. Diseñada para la mujer que lleva su elegancia donde va.</p>
+          <div class="showcase-price">$219.900 COP</div>
+          <p class="showcase-price-sup">o 3 cuotas de $73.300 sin interés</p>
+          <div class="showcase-colors">
+            <span>Color:</span>
+            <div class="color-dot active" style="background:#f8f8f5; border-color:#ddd" title="Blanco Perla"></div>
+          </div>
+          <div class="sizes">
+            <button class="size-btn" onclick="selectSize(this)">35</button>
+            <button class="size-btn" onclick="selectSize(this)">36</button>
+            <button class="size-btn" onclick="selectSize(this)">37</button>
+            <button class="size-btn active" onclick="selectSize(this)">38</button>
+            <button class="size-btn" onclick="selectSize(this)">39</button>
+            <button class="size-btn" onclick="selectSize(this)">40</button>
+            <button class="size-btn" onclick="selectSize(this)">41</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="add-to-cart" onclick="addToCart('Heart Edition White Ribbon', 219900)">Agregar al Carrito</button>
+            <button class="wishlist-btn" onclick="toggleWishlist(this)" title="Lista de deseos">♡</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shoe 4: Croc Nude -->
+      <div class="showcase-item reverse reveal">
+        <div class="showcase-img-wrap">
+          <img src="https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=800&q=85" alt="NAARA Croc Nude Sneaker" loading="lazy" />
+        </div>
+        <div class="showcase-content">
+          <p class="section-eyebrow">Modelo 04</p>
+          <h2 class="showcase-name">Croc Nude<br>Gold Sole</h2>
+          <p class="showcase-desc">Sofisticación urbana en tono arena. Upper en textura crocco con inserto de cuero liso, suela blanca con franja gold espejada y detalles dorados en todo el perfil. Lujo discreto, impacto máximo.</p>
+          <div class="showcase-price">$229.900 COP</div>
+          <p class="showcase-price-sub">o 3 cuotas de $76.633 sin interés</p>
+          <div class="showcase-colors">
+            <span>Color:</span>
+            <div class="color-dot active" style="background:#d4c4a8" title="Nude"></div>
+            <div class="color-dot" style="background:#c4b090" title="Camel"></div>
+          </div>
+          <div class="sizes">
+            <button class="size-btn" onclick="selectSize(this)">35</button>
+            <button class="size-btn" onclick="selectSize(this)">36</button>
+            <button class="size-btn" onclick="selectSize(this)">37</button>
+            <button class="size-btn" onclick="selectSize(this)">38</button>
+            <button class="size-btn active" onclick="selectSize(this)">39</button>
+            <button class="size-btn" onclick="selectSize(this)">40</button>
+            <button class="size-btn" onclick="selectSize(this)">41</button>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="add-to-cart" onclick="addToCart('Croc Nude Gold Sole', 229900)">Agregar al Carrito</button>
+            <button class="wishlist-btn" onclick="toggleWishlist(this)" title="Lista de deseos">♡</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-number">+12K</div>
+        <div class="stat-label">Clientas Felices</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-1">
+        <div class="stat-number">4.9 ★</div>
+        <div class="stat-label">Calificación Promedio</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <div class="stat-number">48h</div>
+        <div class="stat-label">Envío Express</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <div class="stat-number">30</div>
+        <div class="stat-label">Días de Devolución</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURE FULL -->
+  <section class="feature-full">
+    <div class="feature-full-inner">
+      <div class="feature-full-img">
+        <img src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=900&q=85" alt="NAARA Craftsmanship" loading="lazy" />
+      </div>
+      <div class="feature-full-content reveal">
+        <p class="section-eyebrow">Artesanía</p>
+        <h2 class="section-title">Cada par,<br>una obra de arte.</h2>
+        <p class="section-lead">En NAARA creemos que los zapatos son más que moda: son una extensión de tu personalidad. Por eso cada detalle importa.</p>
+        <ul class="feature-list">
+          <li>Corte y costura artesanal con acabados de alta costura</li>
+          <li>Herrajes de zinc bañados en oro 18K o plata 925</li>
+          <li>Cristales Swarovski® en modelos seleccionados</li>
+          <li>Plantillas memory foam con soporte de arco</li>
+          <li>Control de calidad en cada unidad antes del despacho</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLECTION GRID -->
+  <section class="collection" id="coleccion">
+    <div class="section-inner">
+      <p class="section-eyebrow reveal">Explora más</p>
+      <h2 class="section-title reveal">Toda la colección.</h2>
+      <p class="section-lead reveal">Cuatro estilos únicos para cuatro versiones tuyas. Encuentra el que habla de ti.</p>
+      <div class="collection-grid">
+        <div class="collection-card reveal reveal-delay-1">
+          <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=80" alt="Classic White" loading="lazy" />
+          <div class="collection-card-info">
+            <h3>Classic White</h3>
+            <p>El blanco es el nuevo negro. Icónico, versátil, siempre elegante.</p>
+            <a href="#modelos" class="link-btn">Ver Modelo</a>
+          </div>
+        </div>
+        <div class="collection-card reveal reveal-delay-2">
+          <img src="https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=700&q=80" alt="Star Black" loading="lazy" />
+          <div class="collection-card-info">
+            <h3>Star Black</h3>
+            <p>Oscuridad con actitud. Para las noches que piden protagonismo.</p>
+            <a href="#modelos" class="link-btn">Ver Modelo</a>
+          </div>
+        </div>
+        <div class="collection-card reveal reveal-delay-3">
+          <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=700&q=80" alt="Heart Edition" loading="lazy" />
+          <div class="collection-card-info">
+            <h3>Heart Edition</h3>
+            <p>Romántica y sofisticada. Un corazón en cada paso que das.</p>
+            <a href="#modelos" class="link-btn">Ver Modelo</a>
+          </div>
+        </div>
+        <div class="collection-card reveal reveal-delay-4">
+          <img src="https://images.unsplash.com/photo-1600185365926-3a2ce3cdb9eb?w=700&q=80" alt="Croc Nude" loading="lazy" />
+          <div class="collection-card-info">
+            <h3>Croc Nude</h3>
+            <p>Lujo discreto en tono nude con el brillo dorado que te distingue.</p>
+            <a href="#modelos" class="link-btn">Ver Modelo</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="section-inner">
+      <p class="section-eyebrow reveal">Reseñas</p>
+      <h2 class="section-title reveal">Lo que dicen nuestras clientas.</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card reveal reveal-delay-1">
+          <div class="stars">★★★★★</div>
+          <blockquote>"Los recibí en 2 días y quedé enamorada. La calidad supera todo lo que esperaba. Los cristales en la lengüeta son preciosos. Ya los pedí en negro también."</blockquote>
+          <div class="reviewer">
+            <div class="reviewer-avatar">V</div>
+            <div>
+              <div class="reviewer-name">Valentina M.</div>
+              <div class="reviewer-location">Medellín, Colombia</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal reveal-delay-2">
+          <div class="stars">★★★★★</div>
+          <blockquote>"Los NAARA Star Black son exactamente como en las fotos, hasta más lindos en persona. Los herrajes plateados son de excelente calidad. ¡Los recomiendo 100%!"</blockquote>
+          <div class="reviewer">
+            <div class="reviewer-avatar">S</div>
+            <div>
+              <div class="reviewer-name">Sara L.</div>
+              <div class="reviewer-location">Bogotá, Colombia</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal reveal-delay-3">
+          <div class="stars">★★★★★</div>
+          <blockquote>"La Heart Edition con los cordones de raso es divina. La plataforma es cómoda incluso para todo el día. El empaque premium los hace perfectos para regalar."</blockquote>
+          <div class="reviewer">
+            <div class="reviewer-avatar">C</div>
+            <div>
+              <div class="reviewer-name">Camila R.</div>
+              <div class="reviewer-location">Cali, Colombia</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-final" id="contacto">
+    <div style="max-width:700px;margin:0 auto">
+      <p class="section-eyebrow reveal">¿Lista?</p>
+      <h2 class="section-title reveal">Tu par perfecto<br>te está esperando.</h2>
+      <p class="reveal">Envío gratis en compras mayores a $150.000 COP. Elige tu modelo, selecciona tu talla y recíbelos en casa.</p>
+      <a href="#modelos" class="btn-primary reveal">Ver la Colección Completa</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo">NAARA<span style="color:var(--gold)">.</span></a>
+          <p>Sneakers de lujo para la mujer moderna. Diseño, comodidad y actitud en cada paso.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Colección</h4>
+          <ul>
+            <li><a href="#modelos">Classic White</a></li>
+            <li><a href="#modelos">Star Black</a></li>
+            <li><a href="#modelos">Heart Edition</a></li>
+            <li><a href="#modelos">Croc Nude</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Ayuda</h4>
+          <ul>
+            <li><a href="#">Guía de Tallas</a></li>
+            <li><a href="#">Envíos y Devoluciones</a></li>
+            <li><a href="#">Cuidado del Calzado</a></li>
+            <li><a href="#">Preguntas Frecuentes</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contáctanos</h4>
+          <ul>
+            <li><a href="#">WhatsApp</a></li>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">hola@naara.co</a></li>
+            <li><a href="#">Tiendas Físicas</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>Copyright © 2026 NAARA. Todos los derechos reservados.</p>
+        <p>Hecho con ♡ en Colombia</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CART TOAST -->
+  <div id="cartToast" style="
+    position:fixed; bottom:30px; right:30px;
+    background:var(--black); color:white;
+    padding:16px 24px; border-radius:14px;
+    font-size:14px; font-weight:500;
+    box-shadow:0 8px 32px rgba(0,0,0,0.25);
+    transform:translateY(100px); opacity:0;
+    transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    z-index:9999; max-width:300px;
+  ">
+    <span id="cartToastMsg">¡Agregado al carrito!</span>
+  </div>
+
+  <script>
+    /* ── Scroll Reveal ── */
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); }
+      }),
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ── Cart ── */
+    let cartCount = 0;
+    function addToCart(name, price) {
+      cartCount++;
+      document.getElementById('cartCount').textContent = cartCount;
+      showToast(`✦ ${name} agregado — $${price.toLocaleString('es-CO')} COP`);
+    }
+    function showToast(msg) {
+      const t = document.getElementById('cartToast');
+      document.getElementById('cartToastMsg').textContent = msg;
+      t.style.transform = 'translateY(0)';
+      t.style.opacity = '1';
+      setTimeout(() => {
+        t.style.transform = 'translateY(100px)';
+        t.style.opacity = '0';
+      }, 3200);
+    }
+    function toggleCart() {
+      showToast(`🛍 Tienes ${cartCount} producto${cartCount !== 1 ? 's' : ''} en el carrito`);
+    }
+
+    /* ── Size Selection ── */
+    function selectSize(btn) {
+      const parent = btn.closest('.sizes');
+      parent.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    /* ── Wishlist ── */
+    function toggleWishlist(btn) {
+      const active = btn.textContent === '♥';
+      btn.textContent = active ? '♡' : '♥';
+      btn.style.color = active ? '' : '#e53935';
+      showToast(active ? 'Eliminado de favoritos' : '♥ Guardado en favoritos');
+    }
+
+    /* ── Nav shadow on scroll ── */
+    window.addEventListener('scroll', () => {
+      document.querySelector('nav').style.boxShadow =
+        window.scrollY > 10 ? '0 1px 20px rgba(0,0,0,0.08)' : 'none';
+    }, { passive: true });
+  </script>
+</body>
+</html>
