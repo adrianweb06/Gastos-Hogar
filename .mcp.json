@@ -2,17 +2,14 @@
   "mcpServers": {
     "playwright": {
       "command": "npx",
-      "args": [
-        "@playwright/mcp@0.0.68",
-        "--no-sandbox"
-      ]
+      "args": ["-y", "@playwright/mcp@latest"],
+      "env": {
+        "PLAYWRIGHT_MCP_NO_SANDBOX": "1"
+      }
     },
     "magicui": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@magicui/mcp"
-      ]
+      "args": ["-y", "@magicuidesign/mcp@latest"]
     }
   }
 }
