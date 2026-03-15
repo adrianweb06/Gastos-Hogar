@@ -1,0 +1,17 @@
+{
+  "name": "gastos-hogar-plugins",
+  "owner": {
+    "name": "Anthropic",
+    "url": "https://github.com/anthropics"
+  },
+  "plugins": [
+    {
+      "name": "frontend-design",
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-code",
+        "path": "plugins/frontend-design"
+      }
+    }
+  ]
+}

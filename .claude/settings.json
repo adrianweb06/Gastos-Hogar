@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "gastos-hogar-plugins": {
+      "source": {
+        "source": "directory",
+        "path": ".claude/marketplace"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "frontend-design@gastos-hogar-plugins": true
+  }
+}
